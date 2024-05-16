@@ -91,14 +91,11 @@ export default function Home() {
 			clearInterval(intervalId);
 			setIntervalId(null);
 		}
-		setRoundCount(siteConfig.defaultRounds);
 	}
 
 	const runSimulation = () => {
 		setResults([[], []]);
-		setCurrentRound(0);
-		setPlayer1Scores([0]);
-		setPlayer2Scores([0]);
+		resetSimulation();
 
 		const player1Choices: Choice[] = [];
 		const player2Choices: Choice[] = [];
@@ -136,7 +133,7 @@ export default function Home() {
 	};
 
 	const circlesPlayer1 = Array.from({ length: roundCount }, (_, index) => (
-		<div className="flex flex-col space-y-2 leading-0 place-items-center">
+		<div key={index} className="flex flex-col space-y-2 leading-0 place-items-center">
 			<div className={`flex flex-col leading-5 place-items-center ${index < currentRound ? "space-x-1" : ""}`}>
 				<p className="font-semibold">
 					Round {index + 1}
@@ -158,7 +155,7 @@ export default function Home() {
 	));
 
 	const circlesPlayer2 = Array.from({ length: roundCount }, (_, index) => (
-		<div className="flex flex-col space-y-2 leading-0 place-items-center">
+		<div key={index} className="flex flex-col space-y-2 leading-0 place-items-center">
 			<div className={`flex flex-col leading-5 place-items-center ${index < currentRound ? "space-x-1" : ""}`}>
 				<p className="font-semibold">
 					Round {index + 1}
@@ -182,7 +179,7 @@ export default function Home() {
 	return (
 		<section>
 			<div className="flex flex-col space-y-4 place-items-center">
-				<h1 id="TitleText" className="text-4xl font-semibold">The Prisoner's Dilemma</h1>
+				<h1 id="TitleText" className="text-4xl font-semibold">The Prisoner&apos;s Dilemma</h1>
 				<div className="flex flex-row space-x-4 place-items-center">
 					<Tooltip content="How many rounds should the simulation run?" closeDelay={0}>
 						<Input
@@ -213,7 +210,7 @@ export default function Home() {
 						</Button>
 					</Tooltip>
 
-					<Tooltip content="Reset the simulation" closeDelay={0}>
+					<Tooltip content="Clear the simulation" closeDelay={0}>
 						<Button
 							color="danger"
 							variant="faded"
@@ -314,25 +311,28 @@ export default function Home() {
 									padding={{ right: 10, left: 10 }}
 									mirror={true}
 									tickCount={8}
+									type="number"
+									domain={[0, roundCount]}
 									tick={({ x, y, payload }) => {
 										return (
-											<g transform={`translate(${x},${y})`}>
+											<g transform={`translate(${x-2},${y})`}>
 												<rect x={-7} y={-7} width={14} height={14} fill="black"/>
 												<text x={0} y={3.5} textAnchor="middle" fill="white" fontSize={14}>{payload.value}</text>
 											</g>
 										);
 									}}
 								>
-									<Label position="insideBottom" offset={-16}>Rounds</Label>
+									<Label position="insideBottom" offset={-18}>Rounds</Label>
 								</XAxis>
 								<YAxis 
 									padding={{ top: 10, bottom: 10 }} 
 									mirror={true}
 									type="number"
+									domain={[0, "dataMax"]}
 									tickCount={8}
 									tick={({ x, y, payload }) => {
 										return (
-											<g transform={`translate(${x+2},${y+2})`}>
+											<g transform={`translate(${x+4},${y+2})`}>
 												<rect x={-7} y={-7} width={14} height={14} fill="black"/>
 												<text x={0} y={3.5} textAnchor="middle" fill="white" fontSize={14}>{payload.value}</text>
 											</g>
